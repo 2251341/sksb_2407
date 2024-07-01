@@ -1,1 +1,2 @@
-<div>안녕</div>
+
+<h1 class="font-bold text-orange-600">안녕</h1>
