@@ -18,6 +18,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthTokenService authTokenService;
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
     }
@@ -54,8 +55,8 @@ public class MemberService {
         if (!passwordMatches(member, password))
             throw new GlobalException("400-2", "비밀번호가 일치하지 않습니다.");
 
-        String refreshToken = "refreshToken";
-        String accessToken = "accessToken";
+        String refreshToken = authTokenService.genRefreshToken(member);
+        String accessToken = authTokenService.genAccessToken(member);
 
         return RsData.of(
                 "200-1",
@@ -63,4 +64,5 @@ public class MemberService {
                 new AuthAndMakeTokensResponseBody(accessToken, refreshToken)
         );
     }
+
 }
