@@ -1,6 +1,5 @@
 package com.example.sksb.domain.member.controller;
 
-import com.example.sksb.domain.member.dto.MemberDto;
 import com.example.sksb.domain.member.service.MemberService;
 import com.example.sksb.global.rq.Rq;
 import com.example.sksb.global.rsData.RsData;
@@ -25,7 +24,10 @@ public class ApiV1MembersController {
     @AllArgsConstructor
     @Getter
     public static class LoginResponseBody {
-        private MemberDto item;
+        @NotBlank
+        private String refreshToken;
+        @NotBlank
+        private String accessToken;
     }
 
     @Getter
@@ -50,9 +52,8 @@ public class ApiV1MembersController {
                 authAndMakeTokensRs.getResultCode(),
                 authAndMakeTokensRs.getMsg(),
                 new LoginResponseBody(
-                        new MemberDto(
-                                authAndMakeTokensRs.getData().getMember()
-                        )
+                        authAndMakeTokensRs.getData().getRefreshToken(),
+                        authAndMakeTokensRs.getData().getAccessToken()
                 )
         );
     }
