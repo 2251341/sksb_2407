@@ -35,8 +35,9 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime modifyDate;
 
-    public String username;
-    public String password;
+    private String username;
+    private String password;
+    private String refreshToken;
 
     public List<String> getAuthoritiesAsStringList() {
         return List.of("ROLE_MEMBER");
