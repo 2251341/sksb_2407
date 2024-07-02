@@ -4,6 +4,7 @@ import com.example.sksb.domain.member.entity.Member;
 import com.example.sksb.domain.member.repository.MemberRepository;
 import com.example.sksb.global.exceptions.GlobalException;
 import com.example.sksb.global.rsData.RsData;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,15 +20,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthTokenService authTokenService;
+
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
     }
 
-    public boolean passwordMatches(Member member, String password) {
-
-        return passwordEncoder.matches(member.getPassword(), password);
-    }
-
+    @Transactional
     public void join(String username, String password) {
         Member member = Member.builder()
                 .username(username)
@@ -36,15 +34,17 @@ public class MemberService {
 
         memberRepository.save(member);
     }
+
+    public boolean passwordMatches(Member member, String password) {
+        return passwordEncoder.matches(password, member.getPassword());
+    }
+
+    @AllArgsConstructor
     @Getter
     public static class AuthAndMakeTokensResponseBody {
+        private Member member;
         private String accessToken;
         private String refreshToken;
-
-        public AuthAndMakeTokensResponseBody(String accessToken, String refreshToken) {
-            this.accessToken = accessToken;
-            this.refreshToken = refreshToken;
-        }
     }
 
     @Transactional
@@ -61,8 +61,7 @@ public class MemberService {
         return RsData.of(
                 "200-1",
                 "로그인 성공",
-                new AuthAndMakeTokensResponseBody(accessToken, refreshToken)
+                new AuthAndMakeTokensResponseBody(member, accessToken, refreshToken)
         );
     }
-
 }
