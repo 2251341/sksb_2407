@@ -28,8 +28,8 @@ public class ApiSecurityConfig {
                         csrf -> csrf
                                 .disable()
                 )
-                .cors(
-                        cors -> cors.configure(http)
+                .cors(cors -> cors
+                        .configure(http)
                 )
                 .sessionManagement(
                         sessionManagement -> sessionManagement
